@@ -10,6 +10,7 @@ node('slaves'){
 
     stage('Test'){
       withEnv(["GOPATH=${WORKSPACE}", "PATH+GO=${root}/bin:${WORKSPACE}/bin", "GOBIN=${WORKSPACE}/bin"]){
+        sh 'go get ./...'
         sh 'go fmt src/*'
         sh 'go vet src/*'        
         sh 'go test src/*'
