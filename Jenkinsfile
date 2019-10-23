@@ -3,15 +3,18 @@ def functionName = 'HelloWorld'
 def region = 'us-east-1'
 
 node('slaves'){
+  def root = tool name: 'Go 1.13', type: 'go'
     stage('Checkout'){
         checkout scm
     }
 
     stage('Test'){
+      withEnv(["GOPATH=${WORKSPACE}", "PATH+GO=${root}/bin:${WORKSPACE}/bin", "GOBIN=${WORKSPACE}/bin"]){
         sh 'go fmt src/*'
         sh 'go vet src/*'        
         sh 'go test src/*'
     }
+}
 
     stage('Build'){
         sh 'GOOS=linux go build -o main src/main.go'
