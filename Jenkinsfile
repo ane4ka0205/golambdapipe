@@ -10,9 +10,11 @@ node('slaves'){
 
 
     stage('Build'){
+      withEnv(["GOPATH=${WORKSPACE}", "PATH+GO=${root}/bin:${WORKSPACE}/bin", "GOBIN=${WORKSPACE}/bin"]){
         sh 'GOOS=linux go build -o main src/main.go'
         sh "zip ${commitID()}.zip main"
     }
+}
 
     stage('Push'){
         sh "aws s3 cp ${commitID()}.zip s3://${bucket}"
